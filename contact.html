@@ -38,9 +38,8 @@
       <div class="aside-card stack"><p class="eyebrow">Email</p><p class="email-line"><span>david.higgins@mindmachine.io</span></p><button class="copy-btn" type="button" data-copy="david.higgins@mindmachine.io">Copy address</button></div>
     </aside>
     <div>
-      <form id="problem-form" class="form" name="contact" method="POST" data-netlify="true" netlify-honeypot="company-website" novalidate>
-        <input type="hidden" name="form-name" value="contact">
-        <p class="hp"><label>Leave this empty <input name="company-website" tabindex="-1" autocomplete="off"></label></p>
+      <form id="problem-form" class="form" name="contact" action="https://formspree.io/f/mzerybjk" method="POST" novalidate>
+        <p class="hp"><label>Leave this empty <input name="_gotcha" tabindex="-1" autocomplete="off"></label></p>
         <div class="row-2">
           <div class="field"><label for="f-name">Name</label><input id="f-name" name="name" autocomplete="name" required></div>
           <div class="field"><label for="f-email">Work email</label><input id="f-email" name="email" type="email" autocomplete="email" required></div>
@@ -57,15 +56,14 @@
           </div>
         </fieldset>
         <div class="field"><label for="f-problem">The problem</label><span class="hint">What are you trying to achieve, and what is in the way?</span><textarea id="f-problem" name="problem" required></textarea></div>
-        <input type="hidden" name="timescale" value="">
         <label class="consent"><input type="checkbox" id="f-consent" name="consent" value="yes" required><span>Use my details to reply to this enquiry only. See our <a href="privacy.html">privacy notice</a>.</span></label>
         <p class="error-text" id="form-error" role="alert" hidden></p>
         <div><button class="btn" type="submit">Send your problem</button></div>
       </form>
-      <div id="form-status" class="form-status ok stack" tabindex="-1" hidden><h2 class="heading">Thank you. We’ll be in touch.</h2></div>
-      <div id="form-fallback" class="form-status stack" tabindex="-1" hidden>
+      <div id="form-status" class="form-status ok stack" role="status" aria-live="polite" tabindex="-1" hidden><h2 class="heading">Thank you. We’ll be in touch.</h2></div>
+      <div id="form-fallback" class="form-status stack" role="alert" tabindex="-1" hidden>
         <h2 class="heading">We couldn’t send this from here.</h2>
-        <p>Copy your message and email it to <strong>david.higgins@mindmachine.io</strong>.</p>
+        <p>Your enquiry has not been confirmed as sent. You can retry or copy your message and email it to <a href="mailto:david.higgins@mindmachine.io">david.higgins@mindmachine.io</a>.</p>
         <div class="field"><label for="fallback-text">Your message</label><textarea id="fallback-text" readonly></textarea></div>
         <div class="btn-row"><button class="copy-btn" type="button" data-copy="" data-copy-from="fallback-text">Copy message</button><button class="copy-btn" type="button" data-copy="david.higgins@mindmachine.io">Copy address</button></div>
       </div>

@@ -29,15 +29,18 @@
     var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
   }
 
-  // Contact form: posts to Netlify Forms when hosted there; otherwise falls back to email.
+  // Contact form: submit to Formspree; confirm only verified success, with email fallback.
   var form = document.getElementById('problem-form');
   if (!form) return;
   var status = document.getElementById('form-status');
   var fallback = document.getElementById('form-fallback');
   var summary = document.getElementById('fallback-text');
+  var sending = false;
 
   form.addEventListener('submit', function (e) {
     e.preventDefault();
+    if (sending) return;
+    fallback.hidden = true;
     var errors = [];
     form.querySelectorAll('[required]').forEach(function (f) {
       var ok = f.type === 'checkbox' ? f.checked : f.value.trim() !== '';
@@ -55,18 +58,37 @@
     err.hidden = true;
 
     var data = new FormData(form);
-    var body = new URLSearchParams(data).toString();
     var btn = form.querySelector('button[type="submit"]');
-    btn.disabled = true; btn.textContent = 'Sending';
+    sending = true;
+    btn.disabled = true;
+    btn.textContent = 'Sending';
 
-    fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: body })
-      .then(function (res) { if (!res.ok) throw new Error('status ' + res.status); showSent(); })
+    fetch(form.action, {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    })
+      .then(function (res) {
+        if (!res.ok) throw new Error('Submission rejected: ' + res.status);
+        return res.json();
+      })
+      .then(function (result) {
+        if (!result || result.error || (Array.isArray(result.errors) && result.errors.length)) {
+          throw new Error('Submission error');
+        }
+        showSent();
+      })
       .catch(function () { showFallback(data); })
-      .finally(function () { btn.disabled = false; btn.textContent = 'Send your problem'; });
+      .finally(function () {
+        sending = false;
+        btn.disabled = false;
+        btn.textContent = 'Send your problem';
+      });
   });
 
   function showSent() {
     form.hidden = true;
+    fallback.hidden = true;
     status.hidden = false;
     status.focus();
   }
@@ -77,7 +99,6 @@
       'Organisation: ' + (data.get('organisation') || ''),
       'Role: ' + (data.get('role') || ''),
       'Area: ' + (data.get('service') || ''),
-      'Timescale: ' + (data.get('timescale') || ''),
       '',
       data.get('problem') || ''
     ];
